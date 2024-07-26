@@ -1,14 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
-import LanguageSelector from './components/LanguageSelector';
-import Progress from './components/Progress';
-import { createClient } from '@supabase/supabase-js';
+import { useEffect, useRef, useState } from "react";
+import LanguageSelector from "./components/LanguageSelector";
+import Progress from "./components/Progress";
+import { createClient } from "@supabase/supabase-js";
 
-const SUPABASE_URL = 'https://buktbeyvzlhbalkpodkn.supabase.co';
+const SUPABASE_URL = "http://localhost:54321";
 const SUPABASE_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ1a3RiZXl2emxoYmFsa3BvZGtuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjE4ODk5MzgsImV4cCI6MjAzNzQ2NTkzOH0.zHIazuMNLhXUlYjplCRTIZIoj1wAUpocCx_2-zMyP1I';
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0";
 
-import './App.css';
-import { LANGUAGES, languageMapping } from './utils/languages';
+import "./App.css";
+import { LANGUAGES, languageMapping } from "./utils/languages";
 
 function App() {
   // Model loading
@@ -17,13 +17,13 @@ function App() {
   const [progressItems, setProgressItems] = useState([]);
 
   // Inputs and outputs
-  const [input, setInput] = useState('Hallo.');
+  const [input, setInput] = useState("Hallo.");
   const inputRef = useRef(input);
-  const [sourceLanguage, setSourceLanguage] = useState('deu_Latn');
+  const [sourceLanguage, setSourceLanguage] = useState("deu_Latn");
   const sourceLanguageRef = useRef(sourceLanguage);
-  const [targetLanguage, setTargetLanguage] = useState('eng_Latn');
+  const [targetLanguage, setTargetLanguage] = useState("eng_Latn");
   const targetLanguageRef = useRef(targetLanguage);
-  const [output, setOutput] = useState('');
+  const [output, setOutput] = useState("");
 
   // Create a reference to the worker object.
   const worker = useRef(null);
@@ -32,21 +32,21 @@ function App() {
   useEffect(() => {
     if (!worker.current) {
       // Create the worker if it does not yet exist.
-      worker.current = new Worker(new URL('./worker.js', import.meta.url), {
-        type: 'module',
+      worker.current = new Worker(new URL("./worker.js", import.meta.url), {
+        type: "module",
       });
     }
 
     // Create a callback function for messages from the worker thread.
     const onMessageReceived = (e) => {
       switch (e.data.status) {
-        case 'initiate':
+        case "initiate":
           // Model file start load: add a new progress item to the list.
           setReady(false);
           setProgressItems((prev) => [...prev, e.data]);
           break;
 
-        case 'progress':
+        case "progress":
           // Model file progress: update one of the progress items.
           setProgressItems((prev) =>
             prev.map((item) => {
@@ -58,24 +58,24 @@ function App() {
           );
           break;
 
-        case 'done':
+        case "done":
           // Model file loaded: remove the progress item from the list.
           setProgressItems((prev) =>
             prev.filter((item) => item.file !== e.data.file)
           );
           break;
 
-        case 'ready':
+        case "ready":
           // Pipeline ready: the worker is ready to accept messages.
           setReady(true);
           break;
 
-        case 'update':
+        case "update":
           // Generation update: update the output text.
           setOutput(e.data.output);
           break;
 
-        case 'complete':
+        case "complete":
           // Generation complete: re-enable the "Translate" button
           disabled.current = false;
           break;
@@ -83,11 +83,11 @@ function App() {
     };
 
     // Attach the callback function as an event listener.
-    worker.current.addEventListener('message', onMessageReceived);
+    worker.current.addEventListener("message", onMessageReceived);
 
     // Define a cleanup function for when the component is unmounted.
     return () =>
-      worker.current.removeEventListener('message', onMessageReceived);
+      worker.current.removeEventListener("message", onMessageReceived);
   });
 
   const translate = () => {
@@ -97,7 +97,7 @@ function App() {
       return;
     }
     disabled.current = true;
-    console.log('Translating...');
+    console.log("Translating...");
     worker.current.postMessage({
       text: inputRef.current,
       src_lang: sourceLanguageRef.current,
@@ -110,9 +110,9 @@ function App() {
     translate();
     // Subscribe to Supabase realtime broadcast
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-    const channel = supabase.channel('cityjsconfsg');
+    const channel = supabase.channel("cityjsconfsg");
     channel
-      .on('broadcast', { event: 'transcript' }, ({ payload }) => {
+      .on("broadcast", { event: "transcript" }, ({ payload }) => {
         setInput(payload.message);
         inputRef.current = payload.message;
         setSourceLanguage(languageMapping[payload.language]);
@@ -130,7 +130,7 @@ function App() {
       <div className="container">
         <div className="textbox-container">
           <h3>
-            Transcript:{' '}
+            Transcript:{" "}
             {
               Object.entries(LANGUAGES).find(
                 ([key, val]) => val === sourceLanguage
@@ -145,7 +145,7 @@ function App() {
 
         <div className="textbox-container">
           <LanguageSelector
-            type={'Target'}
+            type={"Target"}
             defaultLanguage={targetLanguage}
             onChange={(x) => {
               setTargetLanguage(x.target.value);
