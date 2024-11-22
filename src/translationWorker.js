@@ -1,5 +1,5 @@
 
-import { pipeline } from '@xenova/transformers';
+import { pipeline } from '@huggingface/transformers';
 
 /**
  * This class uses the Singleton pattern to ensure that only one instance of the
