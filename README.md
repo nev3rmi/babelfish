@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Babelfish.ai
 
 A realtime, live transcription and translation app that works locally using a browser. Built with [Huggingface Transformer.js](https://huggingface.co/docs/transformers.js) and [Supabase Realtime](https://supabase.com/realtime).
@@ -29,3 +30,21 @@ Watch a demo / tutorial
 
 - Set your secrets in the GitHub repository settings.
 - Push to main to deploy.
+=======
+# Babelfish
+
+Realtime translations from speech to text.
+
+### Getting started
+
+- Terminal 1: `supabase init`
+- Terminal 2: `cd examples/webgpu-whisper && npm i && npm run dev` - then open [http://localhost:5174/](http://localhost:5174/)
+- Terminal 3: `cd examples/react-translator && npm i && npm run dev` - then open [http://localhost:5173/](http://localhost:5173)
+
+### Customizing Credentials
+
+Change to your Supabase Credentials (use public keys, as they are accessible in the client):
+
+- `./examples/webgpu-whisper/src/utils/broadcaster.js#L3-L5`
+- `/examples/react-translator/src/App.jsx#L6-L8`
+>>>>>>> a0876761c1a70f6ac6989cce25ca038161f60534
